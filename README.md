@@ -25,7 +25,7 @@ We will ultimately present a report containing plots to illustrate the duration 
   - pandas==1.1.3
   - lxml==4.6.1
   
-- R and R packages:
+- R 4.0.2 and R packages:
   - tidyverse==1.3.0
   - feather==0.3.5
   - ggplot2==3.3.2

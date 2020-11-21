@@ -24,3 +24,9 @@ We will ultimately present a report containing plots to illustrate the duration 
   - feather-format==0.4.1
   - pandas==1.1.3
   - lxml==4.6.1
+  
+- R and R packages:
+  - tidyverse==1.3.0
+  - feather==0.3.5
+  - ggplot2==3.3.2
+  - knitr==1.29

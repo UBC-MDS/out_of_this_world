@@ -2,7 +2,7 @@
 
 ## Data Set
 
-We have selected the National UFO Reporting Center (NUFORC) maintained database of sightings of unidentified flying objects (UFO). We will deal specifically with reports made in British Columbia, Canada before 11/18/2020. While NURFORC does curate reports and remove obvious hoaxes, the data is submitted by users and in the majority of cases presented in the users's own words.  The data set can be found [here](http://www.nuforc.org/webreports/ndxlBC.html).  Each row contains information on a single reported UFO sighting.  Our analysis focuses on the `shape` and `duration` columns of the data set.
+We have selected the National UFO Reporting Center (NUFORC) maintained database of sightings of unidentified flying objects (UFO). We will deal specifically with reports made in British Columbia, Canada and Washington State, USA before 11/18/2020. While NURFORC does curate reports and remove obvious hoaxes, the data is submitted by users and in the majority of cases presented in the users's own words.  The data set for BC can be found [here](http://www.nuforc.org/webreports/ndxlBC.html) and the data set for Washington can be found [here](http://www.nuforc.org/webreports/ndxlWA.html).  Each row contains information on a single reported UFO sighting.  Our analysis focuses on the `shape` and `duration` columns of the data set.
 
 ## Primary Question
 
@@ -24,3 +24,9 @@ We will ultimately present a report containing plots to illustrate the duration 
   - feather-format==0.4.1
   - pandas==1.1.3
   - lxml==4.6.1
+  
+- R and R packages:
+  - tidyverse==1.3.0
+  - feather==0.3.5
+  - ggplot2==3.3.2
+  - knitr==1.29

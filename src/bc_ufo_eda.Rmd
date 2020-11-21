@@ -1,0 +1,94 @@
+---
+title: "Exploratory data analysis of UFO data set"
+author: "Anita Li, Jacob McFarlane, Steffen Pentelow, Chirag Rank"
+date: "20/11/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+library(tidyverse)
+library(feather)
+library(ggplot2)
+library(knitr)
+set.seed(2020)
+
+```
+
+# Summary of the data set
+
+
+``` {r load data}
+#ufos <- read_feather("../data/raw/aliens.feather")
+
+ufos <- read.csv("../data/raw/aliens_all.csv", header = TRUE, sep = ',')
+
+ufo_tidy <- ufos %>%
+  mutate(approximate = if_else(str_detect(Duration, "~|About|<|>"),1,0),
+         range = if_else(str_detect(Duration, "-|:|to"),1,0),
+         decimal = if_else(str_detect(Duration, "\\."),1,0),
+         nightly = if_else(str_detect(Duration, "night"),1,0),
+         minute = if_else(str_detect(Duration, "((M|m)in)|MIN"),1,0),
+         second = if_else(str_detect(Duration, "((S|s)ec)|SEC"),1,0),
+         hour = if_else(str_detect(Duration, "((H|h)our)|HOUR"),1,0)) %>%
+  filter(approximate == 0 & range == 0 & decimal == 0, nightly == 0) %>%
+  mutate(numeric_vals = str_extract_all(Duration, "[:digit:]+")) %>%
+  unnest(numeric_vals) %>%
+  mutate(numeric_vals = as.numeric(numeric_vals), 
+         clean_vals = case_when(
+           hour == 1 ~ (numeric_vals * 3600),
+           minute == 1 ~ (numeric_vals * 60),
+           second == 1 ~ numeric_vals)) %>%
+  drop_na(clean_vals, Shape) %>%
+  filter(!Shape %in% c('Unknown', 'Other', 'Changing', '', 'NA')) %>%
+  select(Date...Time, City, State, Shape, clean_vals) %>%
+  rename(
+    data_time = Date...Time,
+    duration_sec = clean_vals
+  )
+
+```
+
+The data set used in this project are records of UFO sightings in [British Columbia](http://www.nuforc.org/webreports/ndxlBC.html), Canada and [Washington States](http://www.nuforc.org/webreports/ndxlWA.html), USA, which is provided by America's foremost UFO Reporting Agency since 1974 and can be found [here]( www.ufocenter.com). Each row in the data set represents an observation of UFO sighting, and features recorded include place and time, shape of UFO, duration of sightings, and a short descriptive summary. There are `r nrow(ufos)` observations and `r ncol(ufos)` features in the data set. However, there are many records with invalid shape and duration. After removing invalid records, there are `r nrow(ufo_tidy)` observations left. Below is a summary of duration for each UFO shape that has more than 30 observations.
+
+```{r SUMMARY TABLE}
+ufo_summary <- ufo_tidy %>%
+  group_by(Shape) %>%
+  summarise(median = median(duration_sec),
+            count = n(),
+            min = min(duration_sec),
+            max = max(duration_sec)) %>%
+  filter(count > 30) %>%
+  arrange(median)
+
+kable(ufo_summary, caption = "Table 1. Statistic summary on the duration of sightings for each shape")
+
+```
+
+
+
+
+# Exploratory analysis on the data set
+
+We choose median to represent the average duration for each sighting because the distribution of duration is skewed. To look at weather the median of duration are different for different shape, we plotted the distribution of duration (on log scale) for each shape. 
+
+```{r EDA, fig.width=9, fig.height=9, fig.cap="Distribution of time duration (in log scale) for each UFO shape"}
+# get sorted order of shape
+shape_order <- as.vector(ufo_summary$Shape)
+
+ufo_tidy %>%
+  filter(Shape %in% shape_order) %>%
+  ggplot(aes(x = duration_sec, 
+      y = factor(Shape, levels = shape_order))) +
+  geom_jitter(height = 0.1, size = 2, alpha = 0.1) +
+  stat_summary(data = ufo_summary,
+               aes(x = median, y = Shape),
+               geom = 'point', shape = 15,
+               size = 2, color = 'red') +
+  scale_x_log10(labels = scales::comma) +
+  xlab("Duration (in log 10 scale)") +
+  ylab("UFO shape")
+
+```
+
+

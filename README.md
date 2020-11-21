@@ -6,15 +6,15 @@ We have selected the National UFO Reporting Center (NUFORC) maintained database 
 
 ## Primary Question
 
-Our primary questions is inferential: Is the mean duration of sightings of UFOs of different shapes different?
+Our primary questions is inferential: Is the median duration of sightings of UFOs of different shapes different?
 
 ## Analysis Plan
 
-Our main tool for this analysis will be a statistical hypothesis test. We plan to follow an analysis of variance (ANOVA) procedure followed by a post-hoc test like Tukey's HSD (honest significant difference) in order to answer the question. As a part of our exploratory analysis, we will create jitter plots of duration of sightings for each shape. We will also create a table for summary statistics separated by sighting.
+Our main tool for this analysis will be a statistical hypothesis test. We plan to use a Kruskal-Wallis test in order to answer the question. As a part of our exploratory analysis, we will create jitter plots of duration of sightings for each shape. We will also create a table for summary statistics separated by sighting.
 
 ## Report Structure
 
-We will ultimately present a report containing plots to illustrate the duration of sightings for each UFO shape, the numerical results of our statistical analysis (ANOVA and Turkey's HSD for the mean duration of sightings for each UFO shape), and a discussion of our procedure and results.  As a first step, we have conducted an exploratory analysis of the data and produced a summary table of durations and jitter plots for each shape which can be found [here](https://github.com/UBC-MDS/out_of_this_world/blob/main/src/ufo_eda.pdf).
+We will ultimately present a report containing plots to illustrate the duration of sightings for each UFO shape, the numerical results of our statistical analysis (Kruskal-Wallis test for difference in median duration of sightings for each UFO shape), and a discussion of our procedure and results.  As a first step, we have conducted an exploratory analysis of the data and produced a summary table of durations and jitter plots for each shape which can be found [here](https://github.com/UBC-MDS/out_of_this_world/blob/main/src/ufo_eda.pdf).
 
 ## Dependencies
 

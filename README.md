@@ -15,3 +15,12 @@ Our main tool for this analysis will be a statistical hypothesis test. We plan t
 ## Report Structure
 
 We will ultimately present a report containing plots to illustrate the duration of sightings for each UFO shape, the numerical results of our statistical analysis (ANOVA and Turkey's HSD for the mean duration of sightings for each UFO shape), and a discussion of our proceedure and results.  As a first step, we have produced individual violin plots of particularly interesting shapes.
+
+## Dependencies
+
+- Python 3.8.5 and Python packages:
+
+  - docopt==0.6.2
+  - feather-format==0.4.1
+  - pandas==1.1.3
+  - lxml==4.6.1

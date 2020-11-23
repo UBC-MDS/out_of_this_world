@@ -19,7 +19,8 @@ clean_times <- function(df, col_to_clean, clean_col_name){
 }
 
 
-# Tests
+# Testing 
+
 # Setting up test data
 dirty_times <- c("2 minutes", "5 mins", "10 min.", "1 minute", "25 MINS",
                  "2 hours", "5 hours", "10 hour.", "1 HOUR", "25 hours",
@@ -29,24 +30,55 @@ dirty_times <- c("2 minutes", "5 mins", "10 min.", "1 minute", "25 MINS",
 
 labels <- rep(c("minute", "hour", "second", "NA", "NA"), each = 5)
 
-clean_times <- c(120, 300, 600, 60, (25 * 60),
+clean_vals <- c(120, 300, 600, 60, (25 * 60),
                  2 * 3600, 5 * 3600, 10 * 3600, 1 * 3600, 25 * 3600,
                  1, 5, 10, 5, 120,
                  rep(NA, 10))
 
-test_tib <- tibble(dirty_times = dirty_times, labels = labels, clean_times = clean_times)
+test_tib <- tibble(dirty_times = dirty_times, labels = labels, clean_vals = clean_vals)
 
 # Does the function handle minutes well?
-
-test_mins <- test_tib %>%
-  filter(labels == "minute")
+mins_df <- test_tib %>% 
+ filter(labels == "minute")
 
 test_that("Function converts minutes well",
-          expect_equal())
+          expect_equal((clean_times(df = mins_df,
+                                   col_to_clean = dirty_times,
+                                   clean_col_name = duration)) %>% pull(duration),
+                       mins_df %>% pull(clean_times)))
+
+# Does the function handle hours well?
+hours_df <- test_tib %>% 
+  filter(labels == "hour")
+
+test_that("Function converts hours well",
+          expect_equal((clean_times(df = hours_df,
+                                    col_to_clean = dirty_times,
+                                    clean_col_name = duration)) %>% pull(duration),
+                       hours_df %>% pull(clean_times)))
+
+# Does the function handle seconds per specification?
+secs_df <- test_tib %>% 
+  filter(labels == "second")
+
+test_that("Function converts seconds well",
+          expect_equal((clean_times(df = secs_df,
+                                    col_to_clean = dirty_times,
+                                    clean_col_name = duration)) %>% pull(duration),
+                       secs_df %>% pull(clean_times)))
 
 
+# Does the function drop time values that are approximate, represent ranges, or 
+# Invalid inputs?
 
+nas_df <- test_tib %>%
+  filter(labels == "NA")
 
+test_that("The function drops appropriate values",
+          expect_equal((clean_times(df = nas_df,
+                                    col_to_clean = dirty_times,
+                                    clean_col_name = duration)) %>% pull(duration),
+                       nas_df %>% pull(clean_times)))
 
 
 # # basic cleaning

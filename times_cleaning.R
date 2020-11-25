@@ -18,7 +18,10 @@ library(tidyverse)
 #' @examples
 clean_times <- function(df, col_to_clean, clean_col_name){
   df %>%
-    # Note: Creates many extra columns, I'm keeping those in for now 
+    # Note: Creates many extra columns, I'm keeping those in for now in case we want
+    # To handle approximations, decimals, or ranges differently.
+    
+    # Big ugly regex to pickout different features in the string slugs
     mutate(approximate = if_else(str_detect({{ col_to_clean }}, "~|About|<|>"),1,0),
          range = if_else(str_detect({{ col_to_clean }}, "-|:|to"),1,0),
          decimal = if_else(str_detect({{ col_to_clean }}, "[:digit:]\\.[:digit:]"),1,0),
@@ -26,9 +29,16 @@ clean_times <- function(df, col_to_clean, clean_col_name){
          minute = if_else(str_detect({{ col_to_clean }}, "((M|m)in)|MIN"),1,0),
          second = if_else(str_detect({{ col_to_clean }}, "((S|s)ec)|SEC"),1,0),
          hour = if_else(str_detect({{ col_to_clean }}, "((H|h)our)|HOUR"),1,0)) %>%
+    
+    # Filtering out values if they triggered the regex for approximate, range,
+    # Duration of nights, or  decimal
     filter(approximate == 0 & range == 0 &  nightly == 0 & decimal == 0) %>%
+    
+    # Pulling our the actual numeric values
     mutate(numeric_vals = str_extract_all({{ col_to_clean }}, "[:digit:]+")) %>%
     unnest(numeric_vals) %>%
+    
+    # Converting numeric values to seconds
     mutate(numeric_vals = as.numeric(numeric_vals),
          {{ clean_col_name }} := case_when(
            hour == 1 ~ (numeric_vals * 3600),

@@ -5,7 +5,8 @@ library(tidyverse)
 #' Cleans times
 #'
 #' This is a function to take times inputted by users of online forms without any restrictions
-#' and converts them to seconds
+#' and converts them to seconds. Approximate times, times given as a range, or times given 
+#' in units other than seconds, minutes, or hours return NA
 #' 
 #' @param df 
 #' @param column 
@@ -28,7 +29,7 @@ dirty_times <- c("2 minutes", "5 mins", "10 min.", "1 minute", "25 MINS",
                  "~1 sec", "1-2 mins", "all night", "now", "ten seconds!!!", "<10 secs",
                  ">10 secs", "almost 10 secs", "7:45-9:21", "1 hour approx.")
 
-labels <- rep(c("minute", "hour", "second", "NA", "NA"), each = 5)
+labels <- rep(c("minute", "hour", "second", NA, NA), each = 5)
 
 clean_vals <- c(120, 300, 600, 60, (25 * 60),
                  2 * 3600, 5 * 3600, 10 * 3600, 1 * 3600, 25 * 3600,

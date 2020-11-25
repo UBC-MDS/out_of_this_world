@@ -18,6 +18,7 @@ library(tidyverse)
 #' @examples
 clean_times <- function(df, col_to_clean, clean_col_name){
   df %>%
+    # Note: Creates many extra columns, I'm keeping those in for now 
     mutate(approximate = if_else(str_detect({{ col_to_clean }}, "~|About|<|>"),1,0),
          range = if_else(str_detect({{ col_to_clean }}, "-|:|to"),1,0),
          decimal = if_else(str_detect({{ col_to_clean }}, "[:digit:]\\.[:digit:]"),1,0),
@@ -32,7 +33,8 @@ clean_times <- function(df, col_to_clean, clean_col_name){
          {{ clean_col_name }} := case_when(
            hour == 1 ~ (numeric_vals * 3600),
            minute == 1 ~ (numeric_vals * 60),
-           second == 1 ~ numeric_vals))
+           second == 1 ~ numeric_vals)) %>%
+    select(-c(range, decimal, nightly, minute, second, hour, approximate, numeric_vals))
 }
 
 

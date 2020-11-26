@@ -1,6 +1,37 @@
+# author: Jacob McFarlane
+# date: 2020-11-25
+# From terminal in the root of the project, call:
+# Rscript src/times_cleaning.R --fp_raw="data/raw/aliens.feather" --fp_pro="data/processed/aliens.feather"
 
-library(testthat)
+
+"This script cleans the raw text duration input from the database and 
+converts it into seconds
+
+Usage: times_cleaning.R --fp_raw=<fp_raw> --fp_pro =<fp_pro>
+
+Options:
+--fp_raw = <fp_raw>        Path to the raw file
+--fp_pro = <fp_pro>  Location to write the cleaned data
+"-> doc
+
 library(tidyverse)
+library(testthat)
+library(docopt)
+library(arrow)
+
+opt <- docopt(doc)
+
+main <- function(){
+  df <- read_feather(opt$fp_raw)
+  df <- df %>%
+    clean_times(Duration, duration_sec) %>%
+    drop_na(duration_sec, Shape) %>%
+    filter(!Shape %in% c('Unknown', 'Other', 'Changing', '')) %>%
+    select(`Date / Time`, City, State, Shape, duration_sec) %>%
+    mutate(log_sec = log(duration_sec)) %>%
+    rename(date_time = `Date / Time`) %>%
+    write_feather(opt$fp_pro)
+}
 
 #' Cleans times
 #'
@@ -110,3 +141,6 @@ test_that("The function drops appropriate values",
                                     col_to_clean = dirty_times,
                                     clean_col_name = duration)) %>% pull(duration),
                        nas_df %>% pull(clean_vals)))
+
+main()
+

@@ -1,5 +1,8 @@
 # author: Jacob McFarlane
 # date: 2020-11-25
+# From terminal in the root of the project, call:
+# Rscript src/times_cleaning.R --fp_raw="data/raw/aliens.feather" --fp_pro="data/processed/aliens.feather"
+
 
 "This script cleans the raw text duration input from the database and 
 converts it into seconds

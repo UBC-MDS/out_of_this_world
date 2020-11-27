@@ -1,0 +1,86 @@
+---
+title: "ROUGH_ANALYSIS"
+author: "SP"
+date: "26/11/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(testthat)
+library(docopt)
+library(arrow)
+library(vegan)
+library(knitr)
+library(broom)
+
+```
+
+```{r Load/Format Data}
+df <- read_feather('data/processed/aliens_pro.feather')
+df <- df %>% 
+  select(Shape, duration_sec) %>% 
+  filter(Shape != 'Flash') %>% 
+  group_by(Shape)
+
+```
+
+
+
+```{r Kruskal-Wallis}
+library(FSA)
+
+df$Shape <- factor(df$Shape)
+kusk <- kruskal.test(duration_sec ~ Shape, data = df)
+dunn <- dunnTest(duration_sec ~ Shape, data = df)
+dunn
+
+```
+
+```{r One way ANOVA with permuation}
+library(coin)
+library(rcompanion)
+
+df$Shape <- factor(df$Shape)
+
+one_anova <- independence_test(duration_sec ~ Shape, data = df)
+
+pairwise_perm <- pairwisePermutationTest(duration_sec ~ Shape, data = df)
+
+```
+
+```{r permANOVA}
+test_data <- data.frame(c(1,2,3,1,1,5))
+test_class <- data.frame(shape = c('s','s','s','r','r','r'))
+data_dist <- dist(test_data, method='euclidean')
+
+adonis(data_dist ~ shape, data=test_class)
+```
+
+```{r permANOVA EXs}
+### Example of use with strata, for nested (e.g., block) designs.
+dat <- expand.grid(rep=gl(2,1), NO3=factor(c(0,10)),field=gl(3,1) )
+dat
+Agropyron <- with(dat, as.numeric(field) + as.numeric(NO3)+2) +rnorm(12)/2
+Schizachyrium <- with(dat, as.numeric(field) - as.numeric(NO3)+2) +rnorm(12)/2
+total <- Agropyron + Schizachyrium
+dotplot(total ~ NO3, dat, jitter.x=TRUE, groups=field,
+        type=c('p','a'), xlab="NO3", auto.key=list(columns=3, lines=TRUE) )
+
+Y <- data.frame(Agropyron, Schizachyrium)
+mod <- metaMDS(Y, trace = FALSE)
+plot(mod)
+### Ellipsoid hulls show treatment
+with(dat, ordiellipse(mod, field, kind = "ehull", label = TRUE))
+### Spider shows fields
+with(dat, ordispider(mod, field, lty=3, col="red"))
+
+### Incorrect (no strata)
+perm <- how(nperm = 199)
+adonis2 (Y ~ NO3, data = dat, permutations = perm)
+
+## Correct with strata
+setBlocks(perm) <- with(dat, field)
+adonis2(Y ~ NO3, data = dat, permutations = perm)
+```

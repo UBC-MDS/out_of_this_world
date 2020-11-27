@@ -1,0 +1,134 @@
+---
+title: "ROUGH_ANALYSIS"
+author: "SP"
+date: "26/11/2020"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(testthat)
+library(docopt)
+library(arrow)
+library(vegan)
+library(knitr)
+library(broom)
+
+```
+
+```{r Load/Format Data}
+df <- read_feather('../data/processed/aliens_pro.feather')
+df <- df %>% 
+  select(Shape, duration_sec) %>% 
+  filter(Shape != 'Flash') %>% 
+  group_by(Shape) %>% 
+  mutate('duration_log_sec' = log10(duration_sec))
+
+```
+
+```{r vis}
+ggplot(df) +
+  aes(x = duration_sec,
+      y = Shape)+
+  geom_violin()
+
+ggplot(df) +
+  aes(x = duration_sec,
+      y = Shape)+
+  geom_violin() +
+  scale_x_log10()
+```
+
+```{r Kruskal-Wallis}
+library(FSA)
+
+df$Shape <- factor(df$Shape)
+
+kusk <- kruskal.test(duration_sec ~ Shape, data = df)
+tidy(kusk)
+
+dunn <- dunnTest(duration_sec ~ Shape, data = df)
+dunn_table <- dunn$res
+dunn_table
+
+```
+
+```{r One way ANOVA with permuation}
+library(coin)
+library(rcompanion)
+
+df$Shape <- factor(df$Shape)
+
+one_anova <- independence_test(duration_log_sec ~ Shape, data = df)
+one_anova
+
+pairwise_perm <- pairwisePermutationTest(duration_log_sec ~ Shape, data = df)
+pairwise_perm
+
+#Visualization
+alpha <- 0.05
+pairwise_matrix <- pairwisePermutationMatrix(duration_log_sec ~ Shape, data = df)
+pairwise_matrix_sig <- pairwise_matrix$Unadjusted < alpha
+
+library(ggplot2)
+library(reshape2)
+
+pairwise_melted = melt(pairwise_matrix_sig)
+
+
+ggplot(pairwise_melted) +
+  aes(x = Var1,
+      y = Var2,
+      fill = value) +
+  geom_tile() +
+  scale_fill_manual(labels = c('Cannot reject null (p>0.05)','Null rejected(p<0.05)', ''),values=c('white','black'), na.value = 'white') +
+  theme(axis.text.x = element_text(angle = 90),
+        axis.title.x=element_blank(),
+        axis.title.y=element_blank(),
+        legend.title=element_blank())
+      
+
+# pairwise_matrix_sig <- tibble(ifelse(pairwise_matrix > alpha, FALSE, TRUE))
+# pairwise_matrix_sig
+```
+
+```{r permANOVA}
+# # ATTEMPTING TO FIGURE OUT HOW ADONIS WORKS
+# test_data <- data.frame(c(1,2,3,1,1,5))
+# test_class <- data.frame(shape = c('s','s','s','r','r','r'))
+# data_dist <- dist(test_data, method='euclidean')
+# 
+# adonis(data_dist ~ shape, data=test_class)
+```
+
+```{r permANOVA EXs}
+# # EXAMPLES OF PERMANOVA FROM VEGAN DOCUMENTATION
+# 
+# ### Example of use with strata, for nested (e.g., block) designs.
+# dat <- expand.grid(rep=gl(2,1), NO3=factor(c(0,10)),field=gl(3,1) )
+# dat
+# Agropyron <- with(dat, as.numeric(field) + as.numeric(NO3)+2) +rnorm(12)/2
+# Schizachyrium <- with(dat, as.numeric(field) - as.numeric(NO3)+2) +rnorm(12)/2
+# total <- Agropyron + Schizachyrium
+# dotplot(total ~ NO3, dat, jitter.x=TRUE, groups=field,
+#         type=c('p','a'), xlab="NO3", auto.key=list(columns=3, lines=TRUE) )
+# 
+# Y <- data.frame(Agropyron, Schizachyrium)
+# mod <- metaMDS(Y, trace = FALSE)
+# plot(mod)
+# ### Ellipsoid hulls show treatment
+# with(dat, ordiellipse(mod, field, kind = "ehull", label = TRUE))
+# ### Spider shows fields
+# with(dat, ordispider(mod, field, lty=3, col="red"))
+# 
+# ### Incorrect (no strata)
+# perm <- how(nperm = 199)
+# adonis2 (Y ~ NO3, data = dat, permutations = perm)
+# 
+# ## Correct with strata
+# setBlocks(perm) <- with(dat, field)
+# adonis2(Y ~ NO3, data = dat, permutations = perm)
+```

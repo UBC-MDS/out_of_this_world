@@ -26,12 +26,10 @@ main <- function(){
   df <- df %>%
     clean_times(Duration, duration_sec) %>%
     drop_na(duration_sec, Shape) %>%
-    filter(!Shape %in% c('Unknown', 'Other', 'Changing', '')) %>%
     select(`Date / Time`, City, State, Shape, duration_sec) %>%
     mutate(log_sec = log(duration_sec)) %>%
     rename(date_time = `Date / Time`) %>%
-    write_feather(opt$fp_pro)
-}
+    write_feather(opt$fp_pro)}
 
 #' Cleans times
 #'

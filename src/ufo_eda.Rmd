@@ -1,7 +1,7 @@
 ---
 title: "Exploratory data analysis of UFO data set"
 author: "Anita Li, Jacob McFarlane, Steffen Pentelow, Chirag Rank"
-date: "20/11/2020"
+date: "21/11/2020"
 output: pdf_document
 
 ---
@@ -48,19 +48,19 @@ ufo_tidy <- ufos %>%
 ```
 
 
-The data set used in this project are records of UFO sightings in [British Columbia](http://www.nuforc.org/webreports/ndxlBC.html), Canada and [Washington States](http://www.nuforc.org/webreports/ndxlWA.html), USA, which is provided by [America's foremost UFO Reporting Agency](www.ufocenter.com) since 1974. Each row in the data set represents an observation of UFO sighting, and features recorded include place and time, shape of UFO, duration of sightings, and a short descriptive summary. There are `r nrow(ufos)` observations and `r ncol(ufos)` features in the data set. However, there are many records with invalid shape and duration. After removing invalid records, there are `r nrow(ufo_tidy)` observations left. In this project, we only interest in UFO shapes that have more than 30 observations. Below is a summary of duration for each UFO shape.
+The data set used in this project are records of UFO sightings in [British Columbia](http://www.nuforc.org/webreports/ndxlBC.html), Canada and [Washington State](http://www.nuforc.org/webreports/ndxlWA.html), USA, which is provided by [America's foremost UFO Reporting Agency](www.ufocenter.com) since 1974. Each row in the data set represents an observation of UFO sighting, and features recorded include place and time, shape of UFO, duration of sightings, and a short descriptive summary. There are `r nrow(ufos)` observations and `r ncol(ufos)` features in the data set. However, there are many records with invalid shape or durations. After removing invalid records, there are `r nrow(ufo_tidy)` observations left. This project will only consider UFO shapes that have more than 30 observations. Table 1 summarizes the duration for each UFO shape.
 
 ```{r SUMMARY TABLE}
 ufo_summary <- ufo_tidy %>%
   group_by(Shape) %>%
-  summarise(median = median(duration_sec),
-            count = n(),
+  summarise(count = n(),
+            median = median(duration_sec),
             min = min(duration_sec),
             max = max(duration_sec)) %>%
   filter(count > 30) %>%
   arrange(median)
 
-kable(ufo_summary, caption = "Table 1. Statistic summary on the duration (seconds) of sightings for each shape")
+kable(ufo_summary, col.names = c('Shape', 'Numer of observations', 'Median', 'Minimum', 'Maximum'), caption = "Summary on the duration (seconds) of sightings for each shape")
 
 ```
 
@@ -69,9 +69,9 @@ kable(ufo_summary, caption = "Table 1. Statistic summary on the duration (second
 
 # Exploratory analysis on the data set
 
-We choose median to represent the average duration for each sighting because the distribution of duration is skewed. To look at weather the median of duration are different for different shape, we plotted the distribution of duration (on log scale) for each shape. There are 14 shapes in this analysis, and for some of them, their medians seem to look the same (i.e. triangle and sphere).
+The median duration of sighting has been selected as the preferred measure of central tendency for this project because the distributions of durations are skewed. Figure 1 illustrates the distribution of durations for each shape through jitter plots of each different.  A $log_{10}$ scale was used for duration axis so that the distribution of observations could be seen more clearly.
 
-```{r EDA, fig.width=10, fig.height=9, fig.cap="Distribution of time duration (in log scale) for each UFO shape"}
+```{r EDA, fig.width=10, fig.height=9, fig.cap="Distribution of duration (in log scale) for each UFO shape"}
 # get sorted order of shape
 shape_order <- as.vector(ufo_summary$Shape)
 
@@ -85,7 +85,7 @@ ufo_tidy %>%
                geom = 'point', shape = 15,
                size = 2, color = 'red') +
   scale_x_log10(labels = scales::comma) +
-  xlab("Duration (in log10 scale)") +
+  xlab("Duration (seconds)") +
   ylab("UFO shape") +
   theme(legend.position = 'top',
         legend.title = element_blank(),
@@ -98,5 +98,4 @@ ufo_tidy %>%
   )
 
 ```
-
-
+From Table 1 and Figure 1, it is noted that several shapes share median durations.  For example, both 'Fireball' and 'Rectangle' have median durations of 120 seconds or 2 minutes.  Multiple shapes also shared median durations of 3 minutes and 5 minutes.  Based on a review of the raw data, it appears that many observers reported durations to the nearest minute which explains these duplications and the 'binning' of points around particular values observed in Figure 1.

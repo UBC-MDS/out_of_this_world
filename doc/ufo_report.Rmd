@@ -7,7 +7,7 @@ output:
   html_document:
     df_print: paged
     toc: true
-# bibliography: ufo_refs.bib
+bibliography: ufo_refs.bib
 ---
 
 ```{r setup, include=FALSE}
@@ -33,7 +33,9 @@ ufo_tidy <- read_csv("../data/processed/aliens.csv")
 
 To test our hypothesis, we selected the dataset UFO sightings maintained by National UFO Reporting Center (NUFORC). The data is submitted by users and in the majority of cases presented in the users' own words. For analysis, we have selected reports made in British Columbia, Canada and Washington State, USA before 11/18/2020. There are `r nrow(ufo_raw)` observations and `r ncol(ufo_raw)` features in the data set.
 
-### Data Processing
+### Data Processing and Methods
+
+Data was analyzed using both the R programming language [@R] and Python [@Python]. Packages utilized in analysis as well as report generation include the Tidyverse package [@tidyverse], docopt for both Python and R [@docopt; @docoptpython], as well as knitr [@knitr].
 
 Text reports of sightings were converted to seconds. We removed sightings that had approximate times or provided a range of times for example: `still here`, `seconds`, `unknown`, `some minutes`. Reports that did not specify any shape or specified something other than shape, for example `Flash`, `Light`, `Unknown`, `Other`, `Changing`, were removed. We also applied a log-transform to the duration of sightings in seconds to aid in visualizing our data and to help make the results of our testing more interpretable. The final data used in the analysis has `r nrow(ufo_tidy)` observations.
 

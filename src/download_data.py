@@ -5,7 +5,7 @@ Usage: src/download_data.py --location=<location> --output_file=<output_file>
 
 Options:
 --location=<location>       The location code of data. For example: 'BC' for British Columbia.
---output_file=<output_file> The file name along with the path of the location to save the data
+--output_file=<output_file> The file name along with the path of the location to save the data. Supports .csv and .feather extension
 
 Example:
 For single state location:       python src/download_data.py --location=BC --output_file=data/raw/aliens.feather

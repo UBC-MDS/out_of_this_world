@@ -1,11 +1,13 @@
 ---
 title: "UFO Report"
-author: "Group-20_DSCI-522"
+author: "Group-20 DSCI-522"
 date: "11/28/2020"
+always_allow_html: true
+output: 
   html_document:
     df_print: paged
     toc: true
-# bibliography: ufo_refs.bib    
+# bibliography: ufo_refs.bib   
 ---
 
 ```{r setup, include=FALSE}
@@ -15,3 +17,65 @@ library(readr)
 library(ggplot2)
 library(knitr)
 ```
+
+# Summary
+
+
+# Introduction
+
+
+
+## Data
+```{r}
+ufo_raw <- read_csv("../data/raw/aliens.csv")
+ufo_tidy <- read_csv("../data/processed/aliens.csv")
+```
+
+We have selected the dataset of reported sightings of unidentified flying objects (UFO) that is maintained by National UFO Reporting Center (NUFORC). The data is submitted by users and in the majority of cases presented in the users' own words.
+For analysis, we have selected reports made in British Columbia,Canada and Washigton State, USA before 11/18/2020. There are `r nrow(ufo_raw)` observations and `r ncol(ufo_raw)` features in the data set. However, there are many records with invalid shape or durations. Each row contains information on a single reported UFO sighting.
+
+### Data Processing
+
+The duration column in the data has been processed to extract numerical time information and converted to reported time in seconds.It was then converted to logscale. The processing then removes observations which the duration did not have any numerical time information in it, For example: `still here`, `seconds`, `unknown`, `some minutes`. We also ignore shapes like `Flash`, `Light`, `Unknown`, `Other`, `Changing`. The final data used in the analysis has `r nrow(ufo_tidy)` observations
+
+## Analysis
+ 
+**Hypothesis**
+ 
+ - $H_0$ The median population duration of all the shapes are equal
+ 
+ - $H_A$ The median population duration of all the shapes are equal
+
+We use Kruskal Wallis H Test to test our Hypothesis. Further we use Dunn's test for Post-Hoc analysis and perform multiple comparisons to identify pairs of groups whose median population duartion are significantly not equal. significance level of $\alpha =0.05$ is used in the test.
+
+
+# Results & Discussion
+**EDA**
+![](../results/ufo_duration_distribution.png)
+
+
+
+**Kruskal Wallis H Test**
+```{r}
+kw_test <- readRDS(here::here("results", "KW.rds"))
+kw_cap <- "Table 1. Kruskal Wallis H Test Test Results"
+knitr::kable(kw_test, caption = kw_cap)
+```
+
+
+**P value of significant pairs from Dunn Test**
+```{r}
+summary <- readRDS(here::here("results", "summary_shape.rds"))
+summary_cap <- "Table 2. Summary"
+knitr::kable(summary, caption = summary_cap)
+```
+
+
+**Post-Hoc Analysis Result**
+
+![](../results/pairwise_plt.png)
+
+
+
+# References
+

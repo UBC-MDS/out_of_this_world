@@ -44,8 +44,8 @@ main <- function() {
   Dunn_table <-
     as_tibble(Dunn_table[[1]], rownames = 'Comparison') %>%
     select(Comparison, pval) %>%
-    filter(pval > alpha) %>%
-    write_rds(here(opt$fp_results, 'Dunn.rds'))
+    filter(pval > alpha)
+ write_rds(Dunn_table, here(opt$fp_results, 'Dunn.rds'))
   
   # Create matrix of pairwise adjusted p values from Dunn test for plotting
   Dunn_matrix <-

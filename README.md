@@ -16,6 +16,18 @@ Our main tool for this analysis will be a statistical hypothesis test. We plan t
 
 We will ultimately present a report containing plots to illustrate the duration of sightings for each UFO shape, the numerical results of our statistical analysis (Kruskal-Wallis test for difference in median duration of sightings for each UFO shape), and a discussion of our procedure and results.  As a first step, we have conducted an exploratory analysis of the data and produced a summary table of durations and jitter plots for each shape which can be found [here](https://github.com/UBC-MDS/out_of_this_world/blob/main/src/ufo_eda.pdf).
 
+## Usage
+
+
+```r
+# run eda report
+Rscript -e "rmarkdown::render('src/ufo_eda.Rmd')"
+
+# create exploratory data analysis table and figure and write to file 
+Rscript src/ufo_eda_bcwa.r --input_data=data/processed/aliens.csv --out_dir=results
+
+```
+
 ## Dependencies
 
 - Python 3.8.5 and Python packages:
@@ -30,3 +42,6 @@ We will ultimately present a report containing plots to illustrate the duration 
   - feather==0.3.5
   - ggplot2==3.3.2
   - knitr==1.29
+  - readr==1.3.1
+  
+

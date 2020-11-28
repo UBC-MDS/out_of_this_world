@@ -19,7 +19,7 @@ We will ultimately present a report containing plots to illustrate the duration 
 ## Usage
 
 
-```r
+```
 # run eda report
 Rscript -e "rmarkdown::render('src/ufo_eda.Rmd')"
 

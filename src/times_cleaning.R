@@ -1,7 +1,7 @@
 # author: Jacob McFarlane
 # date: 2020-11-25
 # From terminal in the root of the project, call:
-# Rscript src/times_cleaning.R --fp_raw="data/raw/aliens.feather" --fp_pro="data/processed/aliens.feather"
+# Rscript src/times_cleaning.R --fp_raw="data/raw/aliens.csv" --fp_pro="data/processed/aliens.csv"
 
 
 "This script cleans the raw text duration input from the database and 
@@ -22,14 +22,14 @@ library(arrow)
 opt <- docopt(doc)
 
 main <- function(){
-  df <- read_feather(opt$fp_raw)
+  df <- read_csv(opt$fp_raw)
   df <- df %>%
     clean_times(Duration, duration_sec) %>%
     drop_na(duration_sec, Shape) %>%
     select(`Date / Time`, City, State, Shape, duration_sec) %>%
     mutate(log_sec = log(duration_sec)) %>%
     rename(date_time = `Date / Time`) %>%
-    write_feather(opt$fp_pro)}
+    write_csv(opt$fp_pro)}
 
 #' Cleans times
 #'
@@ -75,9 +75,6 @@ clean_times <- function(df, col_to_clean, clean_col_name){
            second == 1 ~ numeric_vals)) %>%
     select(-c(range, decimal, nightly, minute, second, hour, approximate, numeric_vals))
 }
-
-
-
 
 # Testing 
 

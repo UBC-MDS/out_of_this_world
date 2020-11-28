@@ -43,5 +43,13 @@ Rscript src/ufo_eda_bcwa.r --input_data=data/processed/aliens.csv --out_dir=resu
   - ggplot2==3.3.2
   - knitr==1.29
   - readr==1.3.1
+  - docopt==0.7.1
+  - testthat==3.0.0
+  - arrow==2.0.0
+  - here==1.0.0
+  - DescTools==0.99.38
+  - reshape2==1.4.4
+  - broom==0.7.0
+  - infer
   
 

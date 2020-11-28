@@ -10,7 +10,7 @@ Usage: analysis.R --fp_pro=<fp_pro> --fp_results=<fp_results>
 Options:
 --fp_pro = <fp_pro>         Path of the cleaned .csv file to analyze (e.g., 
                             'data/processed/aliens.csv')
---fp_results = <fp_results> Location to save results (e.g. 'reports/')
+--fp_results = <fp_results> Location to save results (e.g. 'results/')
 " -> doc
 
 library(here)

@@ -29,7 +29,7 @@ main <- function() {
   # Remove unwanted shapes and group data
   shape_duration <- processed_data %>%
     select(Shape, duration_sec) %>%
-    filter(Shape != c('Flash', 'Light')) %>%
+    filter(Shape != c('Flash', 'Light', 'Unknown', 'Other', 'Changing', '')) %>%
     mutate(Shape = factor(Shape))
   
   

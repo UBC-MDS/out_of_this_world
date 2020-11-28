@@ -48,10 +48,19 @@ def main(location, output_file, supported_loc={"BC", "WA"}):
 
 
     aliens_df = pd.concat(location_df, ignore_index=True)
-    try:
-        feather.write_dataframe(aliens_df, output_file)
-    except:
-        raise NotADirectoryError(output_file + "path does not exists.")
+
+    if output_file.split(".")[-1] == "feather":
+        try:
+            feather.write_dataframe(aliens_df, output_file)
+        except:
+            raise NotADirectoryError(output_file + "path does not exists.")
+    elif output_file.split(".")[-1] == "csv":
+        try:
+            aliens_df.to_csv(output_file, index=False)
+        except:
+            raise NotADirectoryError(output_file + "path does not exists.")
+    else:
+        raise Exception("File format not supported")
 
 
 if __name__ == "__main__":

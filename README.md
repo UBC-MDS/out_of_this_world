@@ -18,13 +18,27 @@ We will ultimately present a report containing plots to illustrate the duration 
 
 ## Usage
 
+Clone this GitHub repository, install the [dependencies](#dependencies) listed below, and run the following
+commands at the terminal from the root directory of this project:
 
 ```
+# download data
+python src/download_data.py --location='BC WA' --output_file=data/raw/aliens.csv
+
 # run eda report
 Rscript -e "rmarkdown::render('src/ufo_eda.Rmd')"
 
-# create exploratory data analysis table and figure and write to file 
-Rscript src/ufo_eda_bcwa.r --input_data=data/processed/aliens.csv --out_dir=results
+# pre-process data 
+Rscript src/times_cleaning.R --fp_raw="data/raw/aliens.csv" --fp_pro="data/processed/aliens.csv"
+
+# create and save exploratory data analysis figure
+Rscript src/ufo_eda_BcWa.R --input_data='data/processed/aliens.csv'  --out_dir='results/'
+
+# statistical analysis
+Rscript src/analysis.R --fp_pro='data/processed/aliens.csv' --fp_results="results/"
+
+# render final report
+Rscript -e "rmarkdown::render('doc/ufo_report.Rmd', output_format = 'github_document')"
 
 ```
 

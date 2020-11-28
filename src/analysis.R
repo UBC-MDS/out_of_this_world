@@ -10,7 +10,7 @@ Usage: analysis.R --fp_pro=<fp_pro> --fp_results=<fp_results>
 Options:
 --fp_pro = <fp_pro>         Path of the cleaned .csv file to analyze (e.g., 
                             'data/processed/aliens.csv')
---fp_results = <fp_results> Location to save results (e.g. 'reports/')
+--fp_results = <fp_results> Location to save results (e.g. 'results/')
 " -> doc
 
 library(here)
@@ -20,6 +20,7 @@ library(docopt)
 library(DescTools)
 library(reshape2)
 library(ggplot2)
+library(broom)
 
 opt <- docopt(doc)
 
@@ -28,7 +29,7 @@ main <- function() {
   # Remove unwanted shapes and group data
   shape_duration <- processed_data %>%
     select(Shape, duration_sec) %>%
-    filter(Shape != c('Flash', 'Light')) %>%
+    filter(Shape != c('Flash', 'Light', 'Unknown', 'Other', 'Changing', '')) %>%
     mutate(Shape = factor(Shape))
   
   

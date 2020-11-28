@@ -9,7 +9,7 @@ output: pdf_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 library(tidyverse)
-library(feather)
+library(readr)
 library(ggplot2)
 library(knitr)
 ```
@@ -18,7 +18,7 @@ library(knitr)
 
 
 ``` {r load data}
-ufos <- read_feather("../data/raw/aliens.feather")
+ufos <- read_csv("../data/raw/aliens.csv")
 
 # basic cleaning
 ufo_tidy <- ufos %>%
@@ -57,7 +57,6 @@ ufo_summary <- ufo_tidy %>%
             median = median(duration_sec),
             min = min(duration_sec),
             max = max(duration_sec)) %>%
-  filter(count > 30) %>%
   arrange(median)
 
 kable(ufo_summary, col.names = c('Shape', 'Numer of observations', 'Median', 'Minimum', 'Maximum'), caption = "Summary on the duration (seconds) of sightings for each shape")
@@ -77,25 +76,21 @@ shape_order <- as.vector(ufo_summary$Shape)
 
 ufo_tidy %>%
   filter(Shape %in% shape_order) %>%
-  ggplot(aes(x = duration_sec, 
-      y = factor(Shape, levels = shape_order))) +
-  geom_jitter(height = 0.15, size = 2, alpha = 0.1) +
-  stat_summary(data = ufo_summary,
-               aes(x = median, y = Shape),
-               geom = 'point', shape = 15,
-               size = 2, color = 'red') +
-  scale_x_log10(labels = scales::comma) +
-  xlab("Duration (seconds)") +
-  ylab("UFO shape") +
-  theme(legend.position = 'top',
-        legend.title = element_blank(),
-        panel.background = element_blank(),
-        axis.line = element_line(size = 1),
-        axis.ticks = element_line(size = 1),
-        axis.ticks.length = unit(.25, 'cm'),
-        text = element_text(size = 15),
-        plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), 'cm')
-  )
+    ggplot(aes(x = duration_sec, 
+               y = factor(Shape, levels = shape_order))) +
+    geom_boxplot(size = 1) +
+    scale_x_log10(labels = scales::comma) +
+    xlab("Duration (in log10 scale)") +
+    ylab("UFO shape") +
+    theme(legend.position = 'top',
+          legend.title = element_blank(),
+          panel.background = element_blank(),
+          axis.line = element_line(size = 1),
+          axis.ticks = element_line(size = 1),
+          axis.ticks.length = unit(.25, 'cm'),
+          text = element_text(size = 15),
+          plot.margin = unit(c(1, 1, 1, 1), 'cm')
+    )
 
 ```
 From Table 1 and Figure 1, it is noted that several shapes share median durations.  For example, both 'Fireball' and 'Rectangle' have median durations of 120 seconds or 2 minutes.  Multiple shapes also shared median durations of 3 minutes and 5 minutes.  Based on a review of the raw data, it appears that many observers reported durations to the nearest minute which explains these duplications and the 'binning' of points around particular values observed in Figure 1.

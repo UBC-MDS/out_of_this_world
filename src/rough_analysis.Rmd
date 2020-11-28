@@ -21,11 +21,13 @@ library(broom)
 
 ```{r Load/Format Data}
 df <- read_feather('../data/processed/aliens_pro.feather')
+# df <- read_csv('../data/processed/aliens.csv')
+
 df <- df %>% 
   select(Shape, duration_sec) %>% 
-  filter(Shape != 'Flash') %>% 
-  group_by(Shape) %>% 
-  mutate('duration_log_sec' = log10(duration_sec))
+  filter(Shape != c('Flash','Light')) %>% 
+  mutate('duration_log_sec' = log10(duration_sec),
+         Shape = factor(Shape))
 
 ```
 
@@ -45,14 +47,16 @@ ggplot(df) +
 ```{r Kruskal-Wallis}
 library(FSA)
 
-df$Shape <- factor(df$Shape)
+# df$Shape <- factor(df$Shape)
 
 kusk <- kruskal.test(duration_sec ~ Shape, data = df)
-tidy(kusk)
 
-dunn <- dunnTest(duration_sec ~ Shape, data = df)
+
+dunn <- dunnTest(duration_sec ~ Shape, data = df, method='bonferroni', table=TRUE)
 dunn_table <- dunn$res
 dunn_table
+
+alpha <- 0.05
 
 ```
 
@@ -62,8 +66,8 @@ library(rcompanion)
 
 df$Shape <- factor(df$Shape)
 
-one_anova <- independence_test(duration_log_sec ~ Shape, data = df)
-one_anova
+one_anova <- aov(duration_log_sec ~ Shape, data = df)
+tidy(one_anova)
 
 pairwise_perm <- pairwisePermutationTest(duration_log_sec ~ Shape, data = df)
 pairwise_perm
@@ -71,7 +75,7 @@ pairwise_perm
 #Visualization
 alpha <- 0.05
 pairwise_matrix <- pairwisePermutationMatrix(duration_log_sec ~ Shape, data = df)
-pairwise_matrix_sig <- pairwise_matrix$Unadjusted < alpha
+pairwise_matrix_sig <- pairwise_matrix$Adjusted < alpha
 
 library(ggplot2)
 library(reshape2)
@@ -102,6 +106,115 @@ ggplot(pairwise_melted) +
 # data_dist <- dist(test_data, method='euclidean')
 # 
 # adonis(data_dist ~ shape, data=test_class)
+# 
+# library(here)
+# 
+# fp_pro = 'data/processed/aliens_pro.feather'
+# fp_results = 'data'
+# 
+# processed_data <- read_feather(here(fp_pro))
+# 
+# # Remove unwanted shapes and group data
+# shape_duration <- processed_data %>% 
+#   select(Shape, duration_sec) %>% 
+#   filter(Shape != c('Flash','Light')) %>% 
+#   mutate(Shape = factor(Shape))
+# 
+# # Kruskal-Wallis test
+# kusk <- kruskal.test(duration_sec ~ Shape, data = df)
+# write_rds(tidy(kusk), here(fp_results,'KW.rds'))
+# 
+# dunn <- dunnTest(duration_sec ~ Shape, data = df, method='bonferroni')
+# dunn_table <- dunn$res
+# filter(dunn_table,
+
+  # Kruskal-Wallis test
+  # kusk <- kruskal.test(duration_sec ~ Shape, data = df)
+  # write_rds(tidy(kusk), here(opt$fp_results,'KW.rds'))
+  
+  # Dunn Test
+  # Dunn_table <- DunnTest(df$duration_sec, df$Shape, method='bonferroni')
+  # Dunn_table <- as_tibble(Dunn_table[[1]], rownames = 'Comparison') %>% 
+  #   select(Comparison, pval) %>% 
+  #   filter(pval>alpha) %>% 
+  #   write_rds(here(opt$fp_results,'Dunn.rds'))
+  
+  # Create matrix of pairwise adjusted p values from Dunn test for plotting
+
+library(DescTools)
+library(reshape2)
+library(ggplot2)
+
+alpha=0.05
+
+Dunn_matrix <- DunnTest(df$duration_sec, df$Shape, method='bonferroni', out.list=FALSE)[[1]]
+n_shapes = dim(Dunn_matrix)[1] + 1
+Dunn_matrix=rbind(rep(NA,n_shapes-1),Dunn_matrix)
+Dunn_matrix=cbind(Dunn_matrix,rep(NA,n_shapes))
+rownames(Dunn_matrix)[1] = colnames(Dunn_matrix)[1]
+colnames(Dunn_matrix)[n_shapes]=rownames(Dunn_matrix)[n_shapes]
+# Dunn_matrix <- t(Dunn_matrix)
+# Dunn_matrix <- Dunn_matrix[[1]]*lower.tri(Dunn_matrix[[1]], diag = TRUE)
+
+pairwise_matrix_sig <- Dunn_matrix < alpha
+pairwise_melted <- melt(pairwise_matrix_sig)
+```
+
+```{r}
+
+
+```
+
+ggplot(pairwise\_melted) +
+
+aes(x = Var1,
+
+y = Var2,
+
+fill = value) +
+
+geom\_tile() +
+
+scale\_fill\_manual(labels= c('Fail to reject null hypothesis (p\>0.05)', 'Reject null hypothesis (p\<0.05)', ''),values=c('grey','red'), na.value = 'white') +
+
+theme(axis.text.x = element\_text(angle = 90),
+
+axis.title.x=element\_blank(),
+
+axis.title.y=element\_blank(),
+
+legend.title=element\_blank())+
+
+ggtitle("Results of pairwise comparison of duration \\n distributions using Dunn's Test")
+
+```{r}
+library(DescTools)
+
+Dunn_table <- DunnTest(df$duration_sec, df$Shape, method='bonferroni')
+Dunn_matrix <- DunnTest(df$duration_sec, df$Shape, method='bonferroni', out.list=FALSE)
+# dunn_table <- 
+# dunn_table
+# 
+# alpha <- 0.05
+
+# pairwise_matrix_sig <- dunn$res$P.adj < alpha
+# 
+# library(ggplot2)
+# library(reshape2)
+# 
+# pairwise_melted = melt(pairwise_matrix_sig)
+# 
+# 
+# ggplot(pairwise_melted) +
+#   aes(x = Var1,
+#       y = Var2,
+#       fill = value) +
+#   geom_tile() +
+#   scale_fill_manual(labels = c('Cannot reject null (p>0.05)','Null rejected(p<0.05)', ''),values=c('white','black'), na.value = 'white') +
+#   theme(axis.text.x = element_text(angle = 90),
+#         axis.title.x=element_blank(),
+#         axis.title.y=element_blank(),
+#         legend.title=element_blank())
 ```
 
 ```{r permANOVA EXs}

@@ -20,6 +20,7 @@ library(docopt)
 library(DescTools)
 library(reshape2)
 library(ggplot2)
+library(broom)
 
 opt <- docopt(doc)
 

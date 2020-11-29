@@ -16,7 +16,6 @@ library(tidyverse)
 library(readr)
 library(docopt)
 library(ggplot2)
-library(infer)
 
 opt <- docopt(doc)
 

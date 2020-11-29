@@ -5,7 +5,7 @@ Usage: src/download_data.py --location=<location> --output_file=<output_file>
 
 Options:
 --location=<location>       The location code of data. For example: 'BC' for British Columbia.
---output_file=<output_file> The file name along with the path of the location to save the data
+--output_file=<output_file> The file name along with the path of the location to save the data. Supports .csv and .feather extension
 
 Example:
 For single state location:       python src/download_data.py --location=BC --output_file=data/raw/aliens.feather
@@ -48,10 +48,19 @@ def main(location, output_file, supported_loc={"BC", "WA"}):
 
 
     aliens_df = pd.concat(location_df, ignore_index=True)
-    try:
-        feather.write_dataframe(aliens_df, output_file)
-    except:
-        raise NotADirectoryError(output_file + "path does not exists.")
+
+    if output_file.split(".")[-1] == "feather":
+        try:
+            feather.write_dataframe(aliens_df, output_file)
+        except:
+            raise NotADirectoryError(output_file + "path does not exists.")
+    elif output_file.split(".")[-1] == "csv":
+        try:
+            aliens_df.to_csv(output_file, index=False)
+        except:
+            raise NotADirectoryError(output_file + "path does not exists.")
+    else:
+        raise Exception("File format not supported")
 
 
 if __name__ == "__main__":

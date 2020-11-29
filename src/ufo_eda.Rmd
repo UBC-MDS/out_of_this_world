@@ -2,8 +2,9 @@
 title: "Exploratory data analysis of UFO data set"
 author: "Anita Li, Jacob McFarlane, Steffen Pentelow, Chirag Rank"
 date: "21/11/2020"
-output: pdf_document
-
+output:
+  html_document:
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
@@ -18,37 +19,13 @@ library(knitr)
 
 
 ``` {r load data}
-ufos <- read_csv("../data/raw/aliens.csv")
-
-# basic cleaning
-ufo_tidy <- ufos %>%
-  mutate(approximate = if_else(str_detect(Duration, "~|About|<|>"),1,0),
-         range = if_else(str_detect(Duration, "-|:|to"),1,0),
-         decimal = if_else(str_detect(Duration, "\\."),1,0),
-         nightly = if_else(str_detect(Duration, "night"),1,0),
-         minute = if_else(str_detect(Duration, "((M|m)in)|MIN"),1,0),
-         second = if_else(str_detect(Duration, "((S|s)ec)|SEC"),1,0),
-         hour = if_else(str_detect(Duration, "((H|h)our)|HOUR"),1,0)) %>%
-  filter(approximate == 0 & range == 0 & decimal == 0, nightly == 0) %>%
-  mutate(numeric_vals = str_extract_all(Duration, "[:digit:]+")) %>%
-  unnest(numeric_vals) %>%
-  mutate(numeric_vals = as.numeric(numeric_vals), 
-         clean_vals = case_when(
-           hour == 1 ~ (numeric_vals * 3600),
-           minute == 1 ~ (numeric_vals * 60),
-           second == 1 ~ numeric_vals)) %>%
-  drop_na(clean_vals, Shape) %>%
-  filter(!Shape %in% c('Unknown', 'Other', 'Changing', '')) %>%
-  select(`Date / Time`, City, State, Shape, clean_vals) %>%
-  rename(
-    data_time = `Date / Time`,
-    duration_sec = clean_vals
-  )
+ufo_raw <- read_csv("../data/raw/aliens.csv")
+ufo_tidy <- read_csv("../data/processed/aliens.csv")
 
 ```
 
 
-The data set used in this project are records of UFO sightings in [British Columbia](http://www.nuforc.org/webreports/ndxlBC.html), Canada and [Washington State](http://www.nuforc.org/webreports/ndxlWA.html), USA, which is provided by [America's foremost UFO Reporting Agency](www.ufocenter.com) since 1974. Each row in the data set represents an observation of UFO sighting, and features recorded include place and time, shape of UFO, duration of sightings, and a short descriptive summary. There are `r nrow(ufos)` observations and `r ncol(ufos)` features in the data set. However, there are many records with invalid shape or durations. After removing invalid records, there are `r nrow(ufo_tidy)` observations left. This project will only consider UFO shapes that have more than 30 observations. Table 1 summarizes the duration for each UFO shape.
+The data set used in this project are records of UFO sightings in [British Columbia](http://www.nuforc.org/webreports/ndxlBC.html), Canada and [Washington State](http://www.nuforc.org/webreports/ndxlWA.html), USA, which is provided by [America's foremost UFO Reporting Agency](www.ufocenter.com) since 1974. Each row in the data set represents an observation of UFO sighting, and features recorded include place and time, shape of UFO, duration of sightings, and a short descriptive summary. There are `r nrow(ufo_raw)` observations and `r ncol(ufo_raw)` features in the data set. However, there are many records with invalid shape or durations. After removing invalid records, there are `r nrow(ufo_tidy)` observations left. This project will only consider UFO shapes that have more than 30 observations. Table 1 summarizes the duration for each UFO shape.
 
 ```{r SUMMARY TABLE}
 ufo_summary <- ufo_tidy %>%
@@ -93,4 +70,4 @@ ufo_tidy %>%
     )
 
 ```
-From Table 1 and Figure 1, it is noted that several shapes share median durations.  For example, both 'Fireball' and 'Rectangle' have median durations of 120 seconds or 2 minutes.  Multiple shapes also shared median durations of 3 minutes and 5 minutes.  Based on a review of the raw data, it appears that many observers reported durations to the nearest minute which explains these duplications and the 'binning' of points around particular values observed in Figure 1.
+From Table 1 and Figure 1, it is noted that several shapes share similar median durations.  For example, both 'Fireball' and 'Rectangle' have median durations of 120 seconds or 2 minutes.  Multiple shapes also shared median durations of 3 minutes and 5 minutes.  Based on a review of the raw data, it appears that many observers reported durations to the nearest minute which explains these duplications and the 'binning' of points around particular values observed in Figure 1.

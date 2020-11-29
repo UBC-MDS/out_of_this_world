@@ -10,7 +10,7 @@ Usage: analysis.R --fp_pro=<fp_pro> --fp_results=<fp_results>
 Options:
 --fp_pro = <fp_pro>         Path of the cleaned .csv file to analyze (e.g., 
                             'data/processed/aliens.csv')
---fp_results = <fp_results> Location to save results (e.g. 'reports/')
+--fp_results = <fp_results> Location to save results (e.g. 'results/')
 " -> doc
 
 library(here)
@@ -20,6 +20,7 @@ library(docopt)
 library(DescTools)
 library(reshape2)
 library(ggplot2)
+library(broom)
 
 opt <- docopt(doc)
 
@@ -28,7 +29,7 @@ main <- function() {
   # Remove unwanted shapes and group data
   shape_duration <- processed_data %>%
     select(Shape, duration_sec) %>%
-    filter(Shape != c('Flash', 'Light')) %>%
+    filter(Shape != c('Flash', 'Light', 'Unknown', 'Other', 'Changing', '')) %>%
     mutate(Shape = factor(Shape))
   
   
@@ -36,7 +37,7 @@ main <- function() {
   
   # Kruskal-Wallis test
   kusk <- kruskal.test(duration_sec ~ Shape, data = shape_duration)
-  write_rds(tidy(kusk), here(opt$fp_results, 'KW.rds'))
+  write_rds(tibble('Model'='Kruskal-Wallis', 'p-value' = kusk['p.value']), here(opt$fp_results, 'KW.rds'))
   
   # Dunn Test
   Dunn_table <-
@@ -44,8 +45,9 @@ main <- function() {
   Dunn_table <-
     as_tibble(Dunn_table[[1]], rownames = 'Comparison') %>%
     select(Comparison, pval) %>%
-    filter(pval > alpha)
- write_rds(Dunn_table, here(opt$fp_results, 'Dunn.rds'))
+    filter(pval < alpha)
+  colnames(Dunn_table) <- c('Comparison', 'Adjusted p-value')
+  write_rds(Dunn_table, here(opt$fp_results, 'Dunn.rds'))
   
   # Create matrix of pairwise adjusted p values from Dunn test for plotting
   Dunn_matrix <-

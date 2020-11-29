@@ -92,7 +92,7 @@ root directory of this project:
     -   DescTools==0.99.38
     -   reshape2==1.4.4
     -   broom==0.7.0
-    -   infer
+    -   infer==0.5.3
 
 # References
 

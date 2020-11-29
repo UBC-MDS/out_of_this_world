@@ -1,6 +1,6 @@
 ---
 output: github_document
-# bibliography: doc/ufo_refs.bib
+bibliography: doc/ufo_refs.bib
 ---
 
 # UFO Sighting

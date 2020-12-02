@@ -15,7 +15,7 @@ data/raw/aliens.csv : src/download_data.py
 
 # The cleaning script should be rerun if we redownload the data or change the cleaning script
 data/processed/aliens.csv : src/times_cleaning.R data/raw/aliens.csv
-	Rscript src/times_cleaning.R --fp_raw="data/raw/aliens.csv" --fp_pro=" data/processed/aliens.csv"
+	Rscript src/times_cleaning.R --fp_raw="data/raw/aliens.csv" --fp_pro="data/processed/aliens.csv"
 
 # If we change our EDA script or the data, these figures and tables should be recreated
 ufo_duration_distriubution.png summary_shape.rds ufo_duration_summary.rds : data/processed/aliens.csv src/ufo_eda.RMD

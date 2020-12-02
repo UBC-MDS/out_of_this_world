@@ -12,13 +12,16 @@ Usage: times_cleaning.R --fp_raw=<fp_raw> --fp_pro =<fp_pro>
 Options:
 --fp_raw = <fp_raw>        Path to the raw file
 --fp_pro = <fp_pro>  Location to write the cleaned data
-"-> doc
+" -> doc
 
 library(tidyverse)
 library(testthat)
 library(docopt)
 
+
 opt <- docopt(doc)
+
+not_shapes = c('Flash', 'Light', 'Unknown', 'Other', 'Changing', '')
 
 main <- function(){
   df <- read_csv(opt$fp_raw)
@@ -26,6 +29,7 @@ main <- function(){
     clean_times(Duration, duration_sec) %>%
     drop_na(duration_sec, Shape) %>%
     select(`Date / Time`, City, State, Shape, duration_sec) %>%
+    filter( !Shape %in%  not_shapes) %>%
     mutate(log_sec = log(duration_sec)) %>%
     rename(date_time = `Date / Time`) %>%
     write_csv(opt$fp_pro)}

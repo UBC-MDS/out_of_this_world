@@ -17,7 +17,6 @@ Options:
 library(tidyverse)
 library(testthat)
 library(docopt)
-library(arrow)
 
 opt <- docopt(doc)
 

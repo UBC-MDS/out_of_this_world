@@ -69,6 +69,10 @@ root directory of this project:
     # render final report
     Rscript -e "rmarkdown::render('doc/ufo_report.Rmd', output_format = 'github_document')"
 
+## Dependencies Diagram
+
+![](Makefile.png)
+
 ## Dependencies
 
 -   Python 3.8.5 and Python packages:
@@ -87,7 +91,6 @@ root directory of this project:
     -   readr==1.3.1
     -   docopt==0.7.1
     -   testthat==3.0.0
-    -   arrow==2.0.0
     -   here==1.0.0
     -   DescTools==0.99.38
     -   reshape2==1.4.4

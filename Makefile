@@ -27,7 +27,7 @@ KW.rds Dunn.rds pairwise_plt.png : src/analysis.R data/processed/aliens.csv
   
 # We need to regenerate the final report should any of these files be changed
 doc/ufo_report.md : KW.rds Dunn.rds pairwise_plt.png summary_shape.rds ufo_duration_summary.rds src/ufo_eda.rmd doc/ufo_refs.bib
-	Rscript -e "rmarkdown::render('doc/ufo_report.Rmd', output_format = 'github_document')"  
+	Rscript -e "rmarkdown::render('doc/ufo_report.Rmd', output_format = 'html_document')"
   
 # Cleaning
 clean :
@@ -35,7 +35,7 @@ clean :
 	rm data/processed/aliens.csv
 	rm -f results/*.png
 	rm -f results/*.rds
-	rm doc/ufo_report.md
+	rm doc/*.html
   
   
 

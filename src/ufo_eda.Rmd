@@ -2,9 +2,7 @@
 title: "Exploratory data analysis of UFO data set"
 author: "Anita Li, Jacob McFarlane, Steffen Pentelow, Chirag Rank"
 date: "21/11/2020"
-output:
-  html_document:
-    df_print: paged
+output: pdf_document
 ---
 
 ```{r setup, include=FALSE}

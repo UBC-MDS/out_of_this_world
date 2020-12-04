@@ -36,18 +36,15 @@ ufo_summary <- ufo_tidy %>%
             max = max(duration_sec)) %>%
   arrange(median)
 
-kable(ufo_summary, col.names = c('Shape', 'Numer of observations', 'Median', 'Minimum', 'Maximum'), caption = "Summary on the duration (seconds) of sightings for each shape")
+kable(ufo_summary, col.names = c('Shape', 'Numer of observations', 'Median', 'Minimum', 'Maximum'), caption = "Table 1. Summary on the duration (seconds) of sightings for each shape")
 
 ```
 
-
-
-
 # Exploratory analysis on the data set
 
-The median duration of sighting has been selected as the preferred measure of central tendency for this project because the distributions of durations are skewed. Figure 1 illustrates the distribution of durations for each shape through jitter plots of each different.  A $log_{10}$ scale was used for duration axis so that the distribution of observations could be seen more clearly.
+The median duration of sighting has been selected as the preferred measure of central tendency for this project because the distributions of durations are skewed. Figure 1 illustrates the distribution of durations for each shape through boxplot of each different.  A $log_{10}$ scale was used for duration axis so that the distribution of observations could be seen more clearly.
 
-```{r EDA, fig.width=10, fig.height=9, fig.cap="Distribution of duration (in log scale) for each UFO shape"}
+```{r EDA, fig.width=10, fig.height=9, fig.cap="Figure 1. Distribution of duration (in log scale) for each UFO shape"}
 # get sorted order of shape
 shape_order <- as.vector(ufo_summary$Shape)
 

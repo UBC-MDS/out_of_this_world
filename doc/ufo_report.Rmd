@@ -3,13 +3,14 @@ title: "UFO Report"
 author: "Group-20 DSCI-522"
 date: "11/28/2020"
 output:
-  html_document:
-    df_print: paged
+  md_document:
+    variant: markdown_github
     toc: yes
   pdf_document:
     toc: yes
-  md_document:
-    variant: markdown_github
+  html_document:
+    df_print: paged
+    toc: yes
 always_allow_html: yes
 bibliography: ufo_refs.bib
 ---

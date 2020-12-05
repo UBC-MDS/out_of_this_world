@@ -13,16 +13,28 @@ all : doc/ufo_report.md
 data/raw/aliens.csv : src/download_data.py 
 	python src/download_data.py --location='BC WA' --output_file=data/raw/aliens.csv
 
+# Processed aliens data should depend on the cleaning script
+data/processed/aliens.csv : src/times_cleaning.R
+	Rscript src/times_cleaning.R --fp_raw="data/raw/aliens.csv" --fp_pro="data/processed/aliens.csv"
+
 # The cleaning script should be rerun if we redownload the data or change the cleaning script
-data/processed/aliens.csv : src/times_cleaning.R data/raw/aliens.csv
+src/times_cleaning.R : data/raw/aliens.csv
 	Rscript src/times_cleaning.R --fp_raw="data/raw/aliens.csv" --fp_pro="data/processed/aliens.csv"
 
 # If we change our EDA script or the data, these figures and tables should be recreated
-ufo_duration_distriubution.png summary_shape.rds ufo_duration_summary.rds : data/processed/aliens.csv src/ufo_eda.RMD
+ufo_duration_distriubution.png summary_shape.rds ufo_duration_summary.rds : src/ufo_eda_bcwa.R
+	Rscript src/ufo_eda_bcwa.R --input_data='data/processed/aliens.csv'  --out_dir='results/'
+
+# If we change our data, we need to update this script
+src/ufo_eda_bcwa.R : data/processed/aliens.csv
 	Rscript src/ufo_eda_bcwa.R --input_data='data/processed/aliens.csv'  --out_dir='results/'
 
 # We need to recreate these objects/ images if we tweak the analysis
-KW.rds Dunn.rds pairwise_plt.png : src/analysis.R data/processed/aliens.csv
+KW.rds Dunn.rds pairwise_plt.png : src/analysis.R
+	Rscript src/analysis.R --fp_pro='data/processed/aliens.csv' --fp_results="results/"
+
+# Analysis should depend on the processed data
+src/analysis.R : data/processed/aliens.csv
 	Rscript src/analysis.R --fp_pro='data/processed/aliens.csv' --fp_results="results/"
   
 # We need to regenerate the final report should any of these files be changed

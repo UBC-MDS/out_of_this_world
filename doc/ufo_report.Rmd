@@ -53,7 +53,7 @@ In most cases, users indicate the shape of the object that they observed in thei
 
 ## Data Visualization
 
-The processed data set used in the analysis consists of `r nrow(ufo_tidy)` observations. Figure \@ref(fig:box-fig) illustrates sample data set included in this analysis. Note that because the data are significantly right skewed, the duration has been plotted on a logarithmic axis so that the data can be more easily compared.
+The processed data set used in the analysis consists of `r nrow(ufo_tidy)` observations. Figure \@ref(fig:box-fig) illustrates sample data set included in this analysis. Note that because the data are significantly right skewed, the duration has been plotted on a logarithmic axis so that the data can be more easily compared.  Shapes are ordered by median duration (largest median at the top).
 
 ```{r box-fig,fig.cap="Box plots of UFO sighting duration by shape", fig.align='center', out.width='85%'}
 knitr::include_graphics(here::here('results','ufo_duration_distribution.png'))

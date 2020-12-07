@@ -28,11 +28,11 @@ ufo_raw <- read_csv("../data/raw/aliens.csv")
 ufo_tidy <- read_csv("../data/processed/aliens.csv")
 ```
 
-To test our hypothesis, we selected the dataset UFO sightings maintained by [\@nuforc]. The data is submitted by users and in the majority of cases presented in the users' own words. Each report in the NUFORC database contains information on the data and time of the sighting, the location, the shape of the object observed, how long it was observed for, and a short description of the event. For analysis, we have selected reports made in [British Columbia, Canada](http://www.nuforc.org/webreports/ndxlBC.html) and [Washington State, USA](http://www.nuforc.org/webreports/ndxlWA.html) before 11/18/2020. The selected reports include a total `r nrow(ufo_raw)` observations. The present analysis was limited to the shape of the objects observed and the duration for which they were observed.
+To test our hypothesis, we selected the dataset UFO sightings maintained by @nuforc. The data is submitted by users and in the majority of cases presented in the users' own words. Each report in the NUFORC database contains information on the data and time of the sighting, the location, the shape of the object observed, how long it was observed for, and a short description of the event. For analysis, we have selected reports made in [British Columbia, Canada](http://www.nuforc.org/webreports/ndxlBC.html) and [Washington State, USA](http://www.nuforc.org/webreports/ndxlWA.html) before 11/18/2020. The selected reports include a total `r nrow(ufo_raw)` observations. The present analysis was limited to the shape of the objects observed and the duration for which they were observed.
 
 ## Data Processing
 
-Data was analyzed using both the R [\@R] and Python [\@Python] programming languages. A comprehensive list of packaged used can be found in the readme file of [this project's GitHub repository](https://github.com/UBC-MDS/out_of_this_world).
+Data was analyzed using both the R [@R] and Python [@Python] programming languages. A comprehensive list of packaged used can be found in the readme file of [this project's GitHub repository](https://github.com/UBC-MDS/out_of_this_world).
 
 ### Duration of Observation
 
@@ -61,15 +61,15 @@ knitr::include_graphics(here::here('results','ufo_duration_distribution.png'))
 
 # Hypotheses
 
-Because of the skewness of the data presented above, a comparison of the mean duration of observations between the different shapes would not be an appropriate approach. Instead, our hypotheses are formulated to look for a difference in the duration distributions between shapes on the basis of the ranks of duration of observations for the different shapes. More formally, our null ($H\_0$) and alternate ($H\_A$) hypotheses are:
+Because of the skewness of the data presented above, a comparison of the mean duration of observations between the different shapes would not be an appropriate approach. Instead, our hypotheses are formulated to look for a difference in the duration distributions between shapes on the basis of the ranks of duration of observations for the different shapes. More formally, our null ($H_0$) and alternate ($H_A$) hypotheses are:
 
--   $H\_0$ The mean ranks of the duration of sightings for all shapes are equal.
+-   $H_0$ The mean ranks of the duration of sightings for all shapes are equal.
 
--   $H\_A$ The mean ranks of the duration of sightings for all shapes are not equal.
+-   $H_A$ The mean ranks of the duration of sightings for all shapes are not equal.
 
 # Analysis
 
-To test our hypotheses, we took a non-parametric approach because of differences in group size, skewed distribution, and variance between the different duration of different shapes. We selected the Kruskal-Wallis H Test to test to determine if significant differences existed. A Dunn test was utilized for Post-Hoc analysis with Bonferroni's correction to identify pairs of groups whose median population duration are significantly different. We selected a significance level of $\\alpha =0.05$ for both steps in testing.
+To test our hypotheses, we took a non-parametric approach because of differences in group size, skewed distribution, and variance between the different duration of different shapes. We selected the Kruskal-Wallis H Test to test to determine if significant differences existed. A Dunn test was utilized for Post-Hoc analysis with Bonferroni's correction to identify pairs of groups whose median population duration are significantly different. We selected a significance level of $\alpha =0.05$ for both steps in testing.
 
 # Results & Discussion
 

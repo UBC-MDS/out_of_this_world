@@ -12,7 +12,7 @@ potentially be linked with the duration of sightings. In this analysis
 we use Kruskal-Wallis test to answer whether the duration of sightings
 of UFOs of different shapes are significantly different. The result
 indicates that there are differences in duration among these shapes.
-Then, we selected Dunn’test for Post-Hoc analysis with Bonferroni’s
+Then, we selected the Dunn test for Post-Hoc analysis with Bonferroni’s
 correction to identify pairs of groups whose median duration are
 significantly different.
 
@@ -75,10 +75,11 @@ of this preoject:
       - reshape2==1.4.4
       - broom==0.7.0
       - infer==0.5.3
+      - bookdown==0.21
 
 # References
 
-<div id="refs" class="references">
+<div id="refs" class="references hanging-indent">
 
 <div id="ref-docopt">
 
@@ -99,6 +100,13 @@ Language*. <https://github.com/docopt/docopt>.
 R Core Team. 2019. *R: A Language and Environment for Statistical
 Computing*. Vienna, Austria: R Foundation for Statistical Computing.
 <https://www.R-project.org/>.
+
+</div>
+
+<div id="ref-nuforc">
+
+The National UFO Reporting Center. 2020. “The National UFO Reporting
+Center Report Database.” <http://www.nuforc.org/>.
 
 </div>
 

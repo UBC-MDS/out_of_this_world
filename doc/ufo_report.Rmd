@@ -3,15 +3,8 @@ title: "UFO Report"
 author: "Group-20 DSCI-522"
 date: "11/28/2020"
 output:
-  md_document:
-    variant: markdown_github
+  bookdown::pdf_document2:
     toc: yes
-  pdf_document:
-    toc: yes
-  html_document:
-    df_print: paged
-    toc: yes
-always_allow_html: yes
 bibliography: ufo_refs.bib
 ---
 
@@ -21,6 +14,7 @@ library(tidyverse)
 library(readr)
 library(ggplot2)
 library(knitr)
+library(bookdown)
 ```
 
 # Introduction
@@ -34,7 +28,7 @@ ufo_raw <- read_csv("../data/raw/aliens.csv")
 ufo_tidy <- read_csv("../data/processed/aliens.csv")
 ```
 
-To test our hypothesis, we selected the dataset UFO sightings maintained by [@nuforc]. The data is submitted by users and in the majority of cases presented in the users' own words. Each report in the NUFORC database contains information on the data and time of the sighting, the location, the shape of the object observed, how long it was observed for, and a short description of the event. For analysis, we have selected reports made in [British Columbia, Canada](http://www.nuforc.org/webreports/ndxlBC.html) and [Washington State, USA](http://www.nuforc.org/webreports/ndxlWA.html) before 11/18/2020. The selected reports include a total `r nrow(ufo_raw)` observations. The present analysis was limited to the shape of the objects observed and the duration for which they were observed.
+To test our hypothesis, we selected the dataset UFO sightings maintained by @nuforc. The data is submitted by users and in the majority of cases presented in the users' own words. Each report in the NUFORC database contains information on the data and time of the sighting, the location, the shape of the object observed, how long it was observed for, and a short description of the event. For analysis, we have selected reports made in [British Columbia, Canada](http://www.nuforc.org/webreports/ndxlBC.html) and [Washington State, USA](http://www.nuforc.org/webreports/ndxlWA.html) before 11/18/2020. The selected reports include a total `r nrow(ufo_raw)` observations. The present analysis was limited to the shape of the objects observed and the duration for which they were observed.
 
 ## Data Processing
 
@@ -59,9 +53,11 @@ In most cases, users indicate the shape of the object that they observed in thei
 
 ## Data Visualization
 
-The processed data set used in the analysis consists of `r nrow(ufo_tidy)` observations. The following box plot illustrates sample data set included in this analysis. Note that because the data are significantly right skewed, the duration has been plotted on a logarithmic axis so that the data can be more easily compared.
+The processed data set used in the analysis consists of `r nrow(ufo_tidy)` observations. Figure \@ref(fig:box-fig) illustrates sample data set included in this analysis. Note that because the data are significantly right skewed, the duration has been plotted on a logarithmic axis so that the data can be more easily compared.  Shapes are ordered by median duration (largest median at the top).
 
-![](../results/ufo_duration_distribution.png)
+```{r box-fig,fig.cap="Box plots of UFO sighting duration by shape", fig.align='center', out.width='85%'}
+knitr::include_graphics(here::here('results','ufo_duration_distribution.png'))
+```
 
 # Hypotheses
 
@@ -77,37 +73,23 @@ To test our hypotheses, we took a non-parametric approach because of differences
 
 # Results & Discussion
 
-**Kruskal Wallis H Test**
+## Kruskal Wallis H Test
 
-The Kruskal Wallis H Test resulted in a $p$-value much less than our stated significance level of 0.05, therefore, we reject the null hypothesis that the mean ranks of the duration of sightings are equal for all shapes.
+The Kruskal Wallis H Test resulted in a $p$-value of $2.8 \times 10^{-7}$.  Since this value is smaller than our stated significance level of 0.05, we reject the null hypothesis that the mean ranks of the duration of sightings are equal for all shapes.
 
-```{r}
-kw_test <- readRDS(here::here("results", "KW.rds"))
-kw_cap <- "Table 1. Kruskal Wallis H Test Test Results"
-knitr::kable(kw_test, caption = kw_cap)
+## Dunn Test
+
+Knowing that the mean ranks of the duration of sightings are not equal for all shapes, we are interested in comparing each shape to all the other shapes. A Dunn test was used to perform pairwise comparisons.  To visualize these results of the pairwise tests, Figure \@ref(fig:pairwise-fig) graphically depicts the pairs of distribution that showed a statistically significant difference (red) and those which did not (grey).
+
+```{r pairwise-fig,fig.cap="Results of pairwise compaison of duration distribution using Dunn's Test", fig.align='center', out.width='85%'}
+knitr::include_graphics(here::here('results','pairwise_plt.png'))
 ```
 
-**Dunn Test**
+Figure \@ref(fig:median-fig) illustrates the differences between distributions by overlaying violin plots for each of the distribution pairs along with the distribution medians. The adjusted pairwise $p$-values are also presented.
 
-Knowing that the mean ranks of the duration of sightings are not equal for all shapes, we are interested in comparing each shape to all the other shapes. A Dunn test was used to perform pairwise comparisons. The pairs of distributions which showed a statistically significant difference are presented in the table below along with their $p$-values (using the Bonferroni correction).
-
-```{r}
-summary <- readRDS(here::here("results", "Dunn.rds"))
-summary_cap <- "Table 2. Shape pairs with significant difference in mean ranks"
-knitr::kable(summary, caption = summary_cap)
+```{r median-fig,fig.align='center', out.width='85%', fig.cap="Pairwise distributions and medians"}
+knitr::include_graphics(here::here('results','median_plt.png'))
 ```
-
-To assist in visualizing these results, the following plot graphically depicts the pairs of distribution that showed a statistically significant difference (red) and those which did not (grey).
-
-**Post-Hoc Analysis Result**
-
-![](../results/pairwise_plt.png)
-
-The figure below further explores the differences between distributions by overlaying violin plots for each of the distribution pairs along with the distribution medians. The adjusted pairwise $p$-values are also presented.
-
-**Pairwise distributions and medians**
-
-![](../results/median_plt.png)
 
 Based on the results of these pairwise comparisons, we see that the distributions of several shapes are significantly different from one another. We are not, however, able to postulate a cause for the difference based on these analyses.
 

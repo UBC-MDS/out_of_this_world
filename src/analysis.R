@@ -37,10 +37,10 @@ main <- function() {
   
   # Kruskal-Wallis test
   kusk <- kruskal.test(duration_sec ~ Shape, data = shape_duration)
-  write_rds(
-    tibble('Model' = 'Kruskal-Wallis', 'p-value' = kusk['p.value']),
-    here(opt$fp_results, 'KW.rds')
-  )
+  # write_rds(
+  #   tibble('Model' = 'Kruskal-Wallis', 'p-value' = kusk['p.value']),
+  #   here(opt$fp_results, 'KW.rds')
+  # )
   
   # Dunn Test
   Dunn_table <-
@@ -93,8 +93,8 @@ main <- function() {
       axis.title.y = element_blank(),
       legend.title = element_blank(),
       legend.position = 'bottom'
-    ) +
-    ggtitle("Results of pairwise comparison of duration distributions using Dunn's Test")
+    )
+    # ggtitle("Results of pairwise comparison of duration distributions using Dunn's Test")
   
   ggsave(here(opt$fp_results, 'pairwise_plt.png'), plot = pairwise_plt)
   

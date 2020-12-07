@@ -11,7 +11,7 @@ nocite: '@*'
 
 ## About
 
-Unidentified flying objects (UFOs) have different shapes and could potentially be linked with the duration of sightings. In this analysis we use Kruskal-Wallis test to answer whether the duration of sightings of UFOs of different shapes are significantly different. The result indicates that there are differences in duration among these shapes. Then, we selected Dunn'test for Post-Hoc analysis with Bonferroni's correction to identify pairs of groups whose median duration are significantly different. 
+Unidentified flying objects (UFOs) have different shapes and could potentially be linked with the duration of sightings. In this analysis we use Kruskal-Wallis test to answer whether the duration of sightings of UFOs of different shapes are significantly different. The result indicates that there are differences in duration among these shapes. Then, we selected the Dunn test for Post-Hoc analysis with Bonferroni's correction to identify pairs of groups whose median duration are significantly different. 
 
 We have selected the National UFO Reporting Center (NUFORC) maintained database of sightings of unidentified flying objects (UFO). We will deal specifically with reports made in British Columbia, Canada and Washington State, USA before 11/18/2020. While NURFORC does curate reports and remove obvious hoaxes, the data is submitted by users and in the majority of cases presented in the users' own words.  The data set for BC can be found [here](http://www.nuforc.org/webreports/ndxlBC.html) and the data set for Washington can be found [here](http://www.nuforc.org/webreports/ndxlWA.html).  Each row contains information on a single reported UFO sighting.  Our analysis focuses on the `shape` and `duration` columns of the data set.
 
@@ -60,5 +60,6 @@ make clean
   - reshape2==1.4.4
   - broom==0.7.0
   - infer==0.5.3
+  - bookdown==0.21
   
 # References

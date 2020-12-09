@@ -38,8 +38,8 @@ src/analysis.R : data/processed/aliens.csv
 	Rscript src/analysis.R --fp_pro='data/processed/aliens.csv' --fp_results="results/"
   
 # We need to regenerate the final report should any of these files be changed
-doc/ufo_report.md : KW.rds Dunn.rds pairwise_plt.png summary_shape.rds ufo_duration_summary.rds src/ufo_eda.rmd doc/ufo_refs.bib
-	Rscript -e "rmarkdown::render('doc/ufo_report.Rmd', output_format = 'html_document')"
+doc/ufo_report.md : KW.rds Dunn.rds pairwise_plt.png summary_shape.rds ufo_duration_summary.rds doc/ufo_refs.bib
+	Rscript -e "rmarkdown::render('doc/ufo_report.Rmd', output_format = 'all')"
   
 # Cleaning
 clean :
@@ -48,7 +48,6 @@ clean :
 	rm -f results/*.png
 	rm -f results/*.rds
 	rm doc/*.html
-  
-  
+	rm doc/*.pdf
 
 

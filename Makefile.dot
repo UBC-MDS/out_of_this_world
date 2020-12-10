@@ -1,0 +1,33 @@
+digraph G {
+n10[label="Dunn.rds", color="red"];
+n4[label="KW.rds", color="red"];
+n2[label="all", color="red"];
+n6[label="data/processed/aliens.csv", color="red"];
+n8[label="data/raw/aliens.csv", color="green"];
+n15[label="doc/ufo_refs.bib", color="green"];
+n3[label="doc/ufo_report.md", color="red"];
+n11[label="pairwise_plt.png", color="red"];
+n5[label="src/analysis.R", color="red"];
+n9[label="src/download_data.py", color="green"];
+n7[label="src/times_cleaning.R", color="red"];
+n13[label="src/ufo_eda_bcwa.R", color="red"];
+n12[label="summary_shape.rds", color="red"];
+n14[label="ufo_duration_summary.rds", color="red"];
+n5 -> n10 ; 
+n5 -> n4 ; 
+n3 -> n2 ; 
+n7 -> n6 ; 
+n9 -> n8 ; 
+n10 -> n3 ; 
+n4 -> n3 ; 
+n15 -> n3 ; 
+n11 -> n3 ; 
+n12 -> n3 ; 
+n14 -> n3 ; 
+n5 -> n11 ; 
+n6 -> n5 ; 
+n8 -> n7 ; 
+n6 -> n13 ; 
+n13 -> n12 ; 
+n13 -> n14 ; 
+}

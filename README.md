@@ -31,7 +31,7 @@ the `shape` and `duration` columns of the data set.
 ## Report
 
 The final report can be found
-[here](https://github.com/UBC-MDS/out_of_this_world/blob/main/doc/ufo_report.md).
+[here](https://github.com/UBC-MDS/out_of_this_world/blob/main/doc/ufo_report.pdf).
 
 ## Usage
 
@@ -69,7 +69,6 @@ of this preoject:
       - readr==1.3.1
       - docopt==0.7.1
       - testthat==3.0.0
-      - arrow==2.0.0
       - here==1.0.0
       - DescTools==0.99.38
       - reshape2==1.4.4

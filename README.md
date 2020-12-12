@@ -35,6 +35,20 @@ The final report can be found
 
 ## Usage
 
+There are two suggested ways to run this analysis:
+
+#### 1\. Using Docker
+
+Clone or download this repository, navigate to the root of this project, and then use the following command (PATH_ON_YOUR_COMPUTER is the absolute path to the root of this project on your computer)
+
+    docker run --rm -v PATH_ON_YOUR_COMPUTER:/home/out_of_the_world chiragrank/python-r:latest make -C '/home/out_of_the_world' all
+
+To clean up the analysis type:
+
+    docker run --rm -v PATH_ON_YOUR_COMPUTER:/home/out_of_the_world chiragrank/python-r:latest make -C '/home/out_of_the_world' clean
+
+#### 2\. Without using Docker
+
 Clone this GitHub repository, install the [dependencies](#dependencies)
 listed below, and run the following commands at the terminal from the
 root directory of this project:
@@ -76,6 +90,7 @@ of this preoject:
       - infer==0.5.3
       - bookdown==0.21
 
+  - GNU make 4.2.1
 # References
 
 <div id="refs" class="references hanging-indent">

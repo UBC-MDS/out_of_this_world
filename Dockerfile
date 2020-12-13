@@ -63,7 +63,7 @@ RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86
 
 ENV PATH /root/miniconda3/bin:$PATH
     
-# install conda packages required for analysis
+# install python packages required for analysis
 RUN conda config --append channels conda-forge && \
     conda install -y docopt==0.6.2 \
     feather-format==0.4.1 \

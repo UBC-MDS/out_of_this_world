@@ -1,8 +1,12 @@
+# Docker file for reproducing results and analysis of project located at:
+#   https://github.com/UBC-MDS/out_of_this_world
 # Author: Chirag Rank
 # Date: December-11-2020
 
+# using the rocker/r-verse image as the base
 FROM rocker/r-ver:4.0.0
 
+# Add tex functionality to image
 ENV PATH=$PATH:/opt/TinyTeX/bin/x86_64-linux/
 
 RUN apt-get update \
@@ -50,6 +54,7 @@ RUN apt-get update \
 && rm -rf /tmp/downloaded_packages/ /tmp/*.rds /var/lib/apt/lists/*
 
 
+# install miniconda
 RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
     bash Miniconda3-latest-Linux-x86_64.sh -b && \
     echo "export PATH='/root/miniconda3/bin:$PATH'">> ~/.bashrc && \
@@ -58,6 +63,7 @@ RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86
 
 ENV PATH /root/miniconda3/bin:$PATH
     
+# install conda packages required for analysis
 RUN conda config --append channels conda-forge && \
     conda install -y docopt==0.6.2 \
     feather-format==0.4.1 \
@@ -65,6 +71,7 @@ RUN conda config --append channels conda-forge && \
     pandas==1.1.3 && \
     conda update --all
 
+# Add makefile2graph to generate makefile image
 RUN git clone https://github.com/lindenb/makefile2graph.git && \
     make -C makefile2graph/. && \
     cp makefile2graph/makefile2graph ../usr/bin && \
